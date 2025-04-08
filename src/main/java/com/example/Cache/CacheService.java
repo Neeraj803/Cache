@@ -35,7 +35,8 @@ public class CacheService {
     	logger.info("entity -> "+entity);
     	if(entity ==null) {
     		logger.warn("Attempted to add a null entity to the cache.");
-    		return;
+    		throw new CacheOperationException("null id not allowed to add " + entity.getId());
+    		
     	}
     	try {
         cache.put(entity.getId(), entity);
@@ -48,22 +49,23 @@ public class CacheService {
     	logger.info("Id for fetching data"+id);
     	if(id == null) {
     		logger.warn("Attempted to get a null id from cache.");
-    		return null;
+    		throw new EntityNotFoundException("null id not present in db and cache" + id);
     	}
     	try {
         return cache.computeIfAbsent(id, key ->{
         try { 
-             return  databaseService.findById(key).orElse(null);
+        	return databaseService.findById(key).orElseThrow(() -> new EntityNotFoundException("Entity not found with id: " + key));
         }catch (Exception e) {
         	logger.error("Error fetching entity with  " + key + " from the database.", e);
-        	return null;
+        	 throw new RuntimeException("Database fetch failed for id: " + key, e);
+        
 		}
         
         });
         
     	}catch (Exception e) {
     		logger.error("Error getting entity from cache for id: " + id, e);
-            return null;
+    		throw new RuntimeException("Cache lookup failed for id: " + id, e);
 		}
     }
     
@@ -74,10 +76,17 @@ public class CacheService {
              return;
          }
     	try {
+    		if(cache.containsKey(id)) {
         cache.remove(id);
+    		}else {
+    			logger.info("ID not found in cache: " + id);
+    			throw new CacheOperationException("id not present in cache for id: "+id);
+    		}
         databaseService.deleteById(id);
     	}catch (Exception e) {
     		logger.error("Error removing entity with id " + id + " from cache and database.", e);
+    		throw new EntityNotFoundException("id not present id for id : "+id);
+    		
 		}
     }
     
@@ -86,6 +95,7 @@ public class CacheService {
         cache.clear();
     	}catch (Exception e) {
     		logger.error("Error clearing the cache.", e);
+    		
 		}
     }
     public void removeAll() {
@@ -94,6 +104,7 @@ public class CacheService {
         databaseService.deleteAll();
     	}catch (Exception e) {
     		logger.error("Error removing all entities from cache and database.", e);
+    		
 		}
     }
 
