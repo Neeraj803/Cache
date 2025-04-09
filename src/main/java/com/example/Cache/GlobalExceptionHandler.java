@@ -16,6 +16,12 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleCacheOperationException(CacheOperationException ex) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
     }
+    
+    @ExceptionHandler(DuplicateEntryException.class)
+    public ResponseEntity<String> handleDuplicateEntryException(DuplicateEntryException ex){
+    	return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
+    }
+   
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleGenericException(Exception ex) {

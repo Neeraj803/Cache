@@ -11,9 +11,10 @@ import org.springframework.stereotype.Service;
 public class CacheService {
 	private static final Logger logger = Logger.getLogger(CacheService.class.getName());
 	private final int MAX_CACHE_SIZE;
-	private final Map<String,EntityCache> cache;
+	public final Map<String,EntityCache> cache;
 	private final DatabaseService  databaseService;
     public CacheService(DatabaseService databaseService) {
+    	
         this.MAX_CACHE_SIZE = 5; // Can be configured dynamically
         this.databaseService = databaseService;
         this.cache = new LinkedHashMap<>(MAX_CACHE_SIZE, 0.75f, true) {
@@ -33,12 +34,15 @@ public class CacheService {
     }
     public void add(EntityCache entity) {
     	logger.info("entity -> "+entity);
-    	if(entity ==null) {
+    	if(entity.getId().isBlank()) {
     		logger.warn("Attempted to add a null entity to the cache.");
-    		throw new CacheOperationException("null id not allowed to add " + entity.getId());
+    		throw new CacheOperationException("null id not allowed to add ");
     		
     	}
     	try {
+    		if(cache.containsKey(entity.getId())) {
+    			throw new DuplicateEntryException("duplicate entry not allowed");
+    		}
         cache.put(entity.getId(), entity);
     	}catch (Exception e) {
     		logger.error("Error adding entity to cache: " + entity.getId(), e);
@@ -47,7 +51,7 @@ public class CacheService {
     }
     public EntityCache get(String id) {
     	logger.info("Id for fetching data"+id);
-    	if(id == null) {
+    	if(id.isBlank()) {
     		logger.warn("Attempted to get a null id from cache.");
     		throw new EntityNotFoundException("null id not present in db and cache" + id);
     	}
@@ -71,7 +75,7 @@ public class CacheService {
     
     public void remove(String id) {
     	
-    	 if (id == null) {
+    	 if (id.isBlank()) {
              logger.warn("Attempted to remove a null id from cache.");
              return;
          }
