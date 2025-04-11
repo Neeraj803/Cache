@@ -1,4 +1,4 @@
-package com.example.Cache;
+package com.example.Cache.Controllers;
 
 
 
@@ -11,6 +11,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.example.Cache.Entities.EntityCache;
+import com.example.Cache.Excaptions.CacheOperationException;
+import com.example.Cache.Excaptions.EntityNotFoundException;
+import com.example.Cache.Services.CacheService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

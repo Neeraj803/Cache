@@ -1,4 +1,4 @@
-package com.example.Cache;
+package com.example.Cache.Excaptions;
 
 public class EntityNotFoundException extends RuntimeException{
 	public EntityNotFoundException(String message) {

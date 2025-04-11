@@ -2,7 +2,7 @@
  * Entity class representing the objects stored in cache.
  */
 
-package com.example.Cache;
+package com.example.Cache.Entities;
 
 
 

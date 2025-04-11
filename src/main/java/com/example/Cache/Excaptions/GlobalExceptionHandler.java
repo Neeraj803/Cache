@@ -1,4 +1,4 @@
-package com.example.Cache;
+package com.example.Cache.Excaptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
