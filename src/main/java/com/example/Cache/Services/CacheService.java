@@ -7,6 +7,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.example.Cache.Entities.EntityCache;
@@ -21,6 +22,10 @@ public class CacheService {
 	private final int MAX_CACHE_SIZE;
 	public Map<String,EntityCache> cache;
 	private final DatabaseService  databaseService;
+	
+	//@Value("${cache.size}")
+	//private int cacheSize;
+	                                                                                                                                    
     public CacheService(DatabaseService databaseService) {
     	
         this.MAX_CACHE_SIZE = 5; // Can be configured dynamically
